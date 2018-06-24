@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>组织机构查询</title>
+</head>
+<body>
+    输入号码：PDY<input type="text" id="type" maxlength="5" /><br/>
+    <button id="submit" style="width: 100px;height: 20px;">提交</button>
+    <div id="div"></div>
+    <!--<div>-->
+        <!--<ul>-->
+            <!--<li  th:each="user:${users}">-->
+                <!--<span th:text="${user.number}"></span>- -->
+                <!--<span th:text="${user.prenumber}"></span>-->
+            <!--</li>-->
+        <!--</ul>-->
+    <!--</div>-->
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script>
+    $(function () {
+        var sm = 0;
+        var tValue;
+        var mod;
+        $("#submit").click(function () {
+            var tValue = $("#type").val();
+            if(tValue.length == 5) {
+
+                for (var i = 3; i < 8; i++) {
+                    if (i == 0) {
+                        sm += Number(tValue.substring(i, i+1)) * 3;
+                    } else if (i == 1) {
+                        sm += Number(tValue.substring(i, i+1)) * 7;
+                    } else if (i == 2) {
+                        sm += Number(tValue.substring(i, i+1)) * 9;
+                    } else if (i == 3) {
+                        sm += Number(tValue.substring(i, i+1)) * 10;
+                    } else if (i == 4) {
+                        sm += Number(tValue.substring(i, i+1)) * 5;
+                    } else if (i == 5) {
+                        sm += Number(tValue.substring(i, i+1)) * 8;
+                    } else if (i == 6) {
+                        sm += Number(tValue.substring(i, i+1)) * 4;
+                    } else if (i == 7) {
+                        sm += Number(tValue.substring(i, i+1)) * 2;
+                    }
+                }
+                sm += 472;
+            }
+            var mod = Number(sm) % 11;
+            if (mod == 10) {
+                mod = 'X';
+            }
+            $("#div").html(tValue + "-" + mod);
+            $.ajax({
+                //cache:true,//保留缓存数据
+                type:"GET",//为post请求
+                url:"/setNumber/",//这是我在后台接受数据的文件名
+                data:{number: "PDY" + tValue + "-" + mod, preNumber: tValue},//将该表单序列化
+                async:false,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    if (data) {
+                        alert("成功！")
+                    }
+                }
+            })
+        });
+    })
+</script>
+</body>
+
+</html>
